@@ -36,6 +36,9 @@ class Settings(BaseSettings):
     retrieval_candidate_count: int = 30
     retrieval_top_k: int = 5
 
+    database_url: str
+    embedding_dimension: int = 384
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

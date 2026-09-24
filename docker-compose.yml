@@ -1,0 +1,28 @@
+services:
+  database:
+    image: pgvector/pgvector:pg16
+    container_name: cloud-incident-database
+
+    environment:
+      POSTGRES_USER: incident_user
+      POSTGRES_PASSWORD: incident_password
+      POSTGRES_DB: incident_agent
+
+    ports:
+      - "5434:5432"
+
+    volumes:
+      - cloud_incident_postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U incident_user -d incident_agent"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  cloud_incident_postgres_data:
