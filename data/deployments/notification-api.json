@@ -1,0 +1,36 @@
+[
+  {
+    "deployment_id": "notification-deploy-181",
+    "service_name": "notification-api",
+    "version": "1.8.1",
+    "deployed_at": "2026-09-18T15:05:00Z",
+    "deployed_by": "release-pipeline",
+    "status": "active",
+    "changes": [
+      "Reduced external provider timeout from 8 seconds to 2 seconds",
+      "Changed notification retry configuration"
+    ],
+    "configuration": {
+      "external_provider_timeout_seconds": 2,
+      "maximum_retry_count": 2,
+      "replica_count": 3
+    }
+  },
+  {
+    "deployment_id": "notification-deploy-180",
+    "service_name": "notification-api",
+    "version": "1.8.0",
+    "deployed_at": "2026-09-10T11:00:00Z",
+    "deployed_by": "release-pipeline",
+    "status": "superseded",
+    "changes": [
+      "Added notification delivery metrics",
+      "Improved structured logging"
+    ],
+    "configuration": {
+      "external_provider_timeout_seconds": 8,
+      "maximum_retry_count": 3,
+      "replica_count": 3
+    }
+  }
+]

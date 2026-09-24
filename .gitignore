@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual environment
+.venv/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Test and tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Generated incident data
+data/incidents/*
+!data/incidents/.gitkeep
+
+# Generated evaluation reports
+evals/reports/
+evals/latest_report.json
+
+# Logs
+*.log
+
+# Model cache
+.cache/
+model_cache/
+
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+
+# LangGraph checkpoints
+data/checkpoints/
+*.sqlite
+*.sqlite3
+*.db

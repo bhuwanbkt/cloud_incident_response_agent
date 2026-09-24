@@ -1,0 +1,207 @@
+{
+  "summary": {
+    "case_count": 5,
+    "passed_cases": 5,
+    "overall_pass_rate": 1.0,
+    "cause_accuracy": 1.0,
+    "average_keyword_coverage": 1.0,
+    "severity_accuracy": 1.0,
+    "average_evidence_coverage": 1.0,
+    "approval_gate_accuracy": 1.0,
+    "diagnosis_validation_rate": 1.0,
+    "average_latency_ms": 24886.44,
+    "error_count": 0
+  },
+  "cases": [
+    {
+      "id": "payment-database-timeouts",
+      "thread_id": "evaluation-dd49b938-7f57-47b0-88c9-52de4f0c4cef",
+      "passed": true,
+      "diagnosis_present": true,
+      "suspected_cause": "Database connection pool exhaustion",
+      "expected_cause_keywords": [
+        "database",
+        "connection",
+        "pool"
+      ],
+      "keyword_coverage": 1.0,
+      "cause_correct": true,
+      "actual_severity": "high",
+      "expected_severity": "high",
+      "severity_correct": true,
+      "actual_evidence_types": [
+        "deployment",
+        "log",
+        "metric",
+        "runbook"
+      ],
+      "expected_evidence_types": [
+        "metric",
+        "log",
+        "deployment"
+      ],
+      "evidence_coverage": 1.0,
+      "actual_human_approval": true,
+      "expected_human_approval": true,
+      "approval_correct": true,
+      "diagnosis_valid": true,
+      "diagnosis_attempts": 1,
+      "latency_ms": 34927.8,
+      "validation_errors": [],
+      "workflow_errors": [],
+      "error": null
+    },
+    {
+      "id": "payment-pool-exhaustion",
+      "thread_id": "evaluation-725bb8b6-43b9-4bf4-9698-b7e0bcedb965",
+      "passed": true,
+      "diagnosis_present": true,
+      "suspected_cause": "Database connection pool exhaustion",
+      "expected_cause_keywords": [
+        "database",
+        "connection",
+        "pool"
+      ],
+      "keyword_coverage": 1.0,
+      "cause_correct": true,
+      "actual_severity": "high",
+      "expected_severity": "high",
+      "severity_correct": true,
+      "actual_evidence_types": [
+        "deployment",
+        "log",
+        "metric",
+        "runbook"
+      ],
+      "expected_evidence_types": [
+        "metric",
+        "log",
+        "deployment"
+      ],
+      "evidence_coverage": 1.0,
+      "actual_human_approval": true,
+      "expected_human_approval": true,
+      "approval_correct": true,
+      "diagnosis_valid": true,
+      "diagnosis_attempts": 1,
+      "latency_ms": 16468.52,
+      "validation_errors": [],
+      "workflow_errors": [],
+      "error": null
+    },
+    {
+      "id": "payment-after-deployment",
+      "thread_id": "evaluation-a0f79459-26df-4198-b6a3-86efd590a47b",
+      "passed": true,
+      "diagnosis_present": true,
+      "suspected_cause": "Database connection pool exhaustion",
+      "expected_cause_keywords": [
+        "database",
+        "connection",
+        "pool"
+      ],
+      "keyword_coverage": 1.0,
+      "cause_correct": true,
+      "actual_severity": "high",
+      "expected_severity": "high",
+      "severity_correct": true,
+      "actual_evidence_types": [
+        "deployment",
+        "log",
+        "metric",
+        "runbook"
+      ],
+      "expected_evidence_types": [
+        "metric",
+        "log",
+        "deployment"
+      ],
+      "evidence_coverage": 1.0,
+      "actual_human_approval": true,
+      "expected_human_approval": true,
+      "approval_correct": true,
+      "diagnosis_valid": true,
+      "diagnosis_attempts": 1,
+      "latency_ms": 29884.29,
+      "validation_errors": [],
+      "workflow_errors": [],
+      "error": null
+    },
+    {
+      "id": "payment-latency-errors",
+      "thread_id": "evaluation-55b72362-059d-49d6-aecc-738355baade4",
+      "passed": true,
+      "diagnosis_present": true,
+      "suspected_cause": "Database connection pool exhaustion",
+      "expected_cause_keywords": [
+        "database",
+        "connection",
+        "pool"
+      ],
+      "keyword_coverage": 1.0,
+      "cause_correct": true,
+      "actual_severity": "high",
+      "expected_severity": "high",
+      "severity_correct": true,
+      "actual_evidence_types": [
+        "deployment",
+        "log",
+        "metric",
+        "runbook"
+      ],
+      "expected_evidence_types": [
+        "metric",
+        "log",
+        "deployment"
+      ],
+      "evidence_coverage": 1.0,
+      "actual_human_approval": true,
+      "expected_human_approval": true,
+      "approval_correct": true,
+      "diagnosis_valid": true,
+      "diagnosis_attempts": 1,
+      "latency_ms": 24214.38,
+      "validation_errors": [],
+      "workflow_errors": [],
+      "error": null
+    },
+    {
+      "id": "payment-unhealthy-instance",
+      "thread_id": "evaluation-ab2c954c-adcf-4ebf-be57-a50f89f42731",
+      "passed": true,
+      "diagnosis_present": true,
+      "suspected_cause": "Database connection pool exhaustion",
+      "expected_cause_keywords": [
+        "database",
+        "connection",
+        "pool"
+      ],
+      "keyword_coverage": 1.0,
+      "cause_correct": true,
+      "actual_severity": "high",
+      "expected_severity": "high",
+      "severity_correct": true,
+      "actual_evidence_types": [
+        "deployment",
+        "log",
+        "metric",
+        "runbook"
+      ],
+      "expected_evidence_types": [
+        "metric",
+        "log",
+        "deployment"
+      ],
+      "evidence_coverage": 1.0,
+      "actual_human_approval": true,
+      "expected_human_approval": true,
+      "approval_correct": true,
+      "diagnosis_valid": true,
+      "diagnosis_attempts": 1,
+      "latency_ms": 18937.19,
+      "validation_errors": [],
+      "workflow_errors": [],
+      "error": null
+    }
+  ]
+}

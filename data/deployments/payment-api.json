@@ -1,0 +1,36 @@
+[
+  {
+    "deployment_id": "deploy-240",
+    "service_name": "payment-api",
+    "version": "2.4.0",
+    "deployed_at": "2026-09-10T10:00:00Z",
+    "deployed_by": "release-pipeline",
+    "status": "superseded",
+    "changes": [
+      "Improved payment request validation",
+      "Added structured transaction logging"
+    ],
+    "configuration": {
+      "database_pool_size": 40,
+      "request_timeout_seconds": 10,
+      "replica_count": 3
+    }
+  },
+  {
+    "deployment_id": "deploy-241",
+    "service_name": "payment-api",
+    "version": "2.4.1",
+    "deployed_at": "2026-09-18T14:05:00Z",
+    "deployed_by": "release-pipeline",
+    "status": "active",
+    "changes": [
+      "Reduced database pool size to lower database load",
+      "Updated dependency versions"
+    ],
+    "configuration": {
+      "database_pool_size": 10,
+      "request_timeout_seconds": 10,
+      "replica_count": 3
+    }
+  }
+]

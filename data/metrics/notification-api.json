@@ -1,0 +1,14 @@
+{
+  "service_name": "notification-api",
+  "status": "degraded",
+  "recorded_at": "2026-09-18T15:20:00Z",
+  "cpu_percent": 38.4,
+  "memory_percent": 57.2,
+  "p50_latency_ms": 920,
+  "p95_latency_ms": 5300,
+  "p99_latency_ms": 7900,
+  "error_rate_percent": 14.6,
+  "request_count": 8200,
+  "healthy_instance_count": 3,
+  "total_instance_count": 3
+}

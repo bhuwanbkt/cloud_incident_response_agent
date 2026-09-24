@@ -1,0 +1,109 @@
+[
+  {
+    "id": "payment-database-timeouts",
+    "incident_description": "The payment API has high latency, database connection timeouts, and HTTP 500 errors.",
+    "service_name": "payment-api",
+    "expected_cause_keywords": [
+      "database",
+      "connection",
+      "pool"
+    ],
+    "expected_severity": "high",
+    "expected_evidence_types": [
+      "metric",
+      "log",
+      "deployment",
+      "runbook"
+    ],
+    "expected_human_approval": true
+  },
+  {
+    "id": "payment-pool-exhaustion",
+    "incident_description": "Users report slow payment requests. Application logs show database pool exhaustion and requests are returning HTTP 500 responses.",
+    "service_name": "payment-api",
+    "expected_cause_keywords": [
+      "database",
+      "connection",
+      "pool"
+    ],
+    "expected_severity": "high",
+    "expected_evidence_types": [
+      "metric",
+      "log",
+      "deployment",
+      "runbook"
+    ],
+    "expected_human_approval": true
+  },
+  {
+    "id": "payment-after-deployment",
+    "incident_description": "Payment API failures started shortly after the latest deployment. Database connection acquisition is timing out and latency is increasing.",
+    "service_name": "payment-api",
+    "expected_cause_keywords": [
+      "database",
+      "connection",
+      "pool"
+    ],
+    "expected_severity": "high",
+    "expected_evidence_types": [
+      "metric",
+      "log",
+      "deployment",
+      "runbook"
+    ],
+    "expected_human_approval": true
+  },
+  {
+    "id": "payment-latency-errors",
+    "incident_description": "The payment service is degraded with a high error rate, P95 latency above four seconds, and database connection timeout messages.",
+    "service_name": "payment-api",
+    "expected_cause_keywords": [
+      "database",
+      "connection",
+      "pool"
+    ],
+    "expected_severity": "high",
+    "expected_evidence_types": [
+      "metric",
+      "log",
+      "deployment",
+      "runbook"
+    ],
+    "expected_human_approval": true
+  },
+  {
+    "id": "payment-unhealthy-instance",
+    "incident_description": "One payment API instance is unhealthy. Requests are waiting for database connections and customers are receiving server errors.",
+    "service_name": "payment-api",
+    "expected_cause_keywords": [
+      "database",
+      "connection",
+      "pool"
+    ],
+    "expected_severity": "high",
+    "expected_evidence_types": [
+      "metric",
+      "log",
+      "deployment",
+      "runbook"
+    ],
+    "expected_human_approval": true
+  },
+  {
+    "id": "notification-external-timeout",
+    "incident_description": "The notification API has high latency, upstream HTTP 504 errors, provider timeouts, and repeated notification delivery failures after the latest deployment.",
+    "service_name": "notification-api",
+    "expected_cause_keywords": [
+      "external",
+      "timeout"
+    ],
+    "expected_severity": "high",
+    "expected_evidence_types": [
+      "metric",
+      "log",
+      "deployment",
+      "runbook"
+    ],
+    "expected_human_approval": true
+  }
+]

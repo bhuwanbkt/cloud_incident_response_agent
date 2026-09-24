@@ -1,0 +1,30 @@
+[
+  {
+    "timestamp": "2026-09-18T15:18:42Z",
+    "level": "ERROR",
+    "service_name": "notification-api",
+    "message": "External notification provider request exceeded the 2000 millisecond timeout",
+    "trace_id": "trace-notification-1004"
+  },
+  {
+    "timestamp": "2026-09-18T15:18:31Z",
+    "level": "ERROR",
+    "service_name": "notification-api",
+    "message": "Circuit breaker opened for external notification provider",
+    "trace_id": "trace-notification-1003"
+  },
+  {
+    "timestamp": "2026-09-18T15:18:12Z",
+    "level": "ERROR",
+    "service_name": "notification-api",
+    "message": "Notification delivery failed with upstream HTTP status 504",
+    "trace_id": "trace-notification-1002"
+  },
+  {
+    "timestamp": "2026-09-18T15:17:54Z",
+    "level": "ERROR",
+    "service_name": "notification-api",
+    "message": "Retry limit exceeded while calling external notification provider",
+    "trace_id": "trace-notification-1001"
+  }
+]

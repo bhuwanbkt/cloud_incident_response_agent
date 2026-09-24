@@ -1,0 +1,14 @@
+{
+  "service_name": "payment-api",
+  "status": "degraded",
+  "recorded_at": "2026-09-18T14:20:00Z",
+  "cpu_percent": 42.3,
+  "memory_percent": 68.7,
+  "p50_latency_ms": 850,
+  "p95_latency_ms": 4200,
+  "p99_latency_ms": 6100,
+  "error_rate_percent": 18.2,
+  "request_count": 12500,
+  "healthy_instance_count": 2,
+  "total_instance_count": 3
+}

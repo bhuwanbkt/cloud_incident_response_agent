@@ -1,0 +1,51 @@
+[
+  {
+    "timestamp": "2026-09-18T14:12:03Z",
+    "level": "INFO",
+    "service_name": "payment-api",
+    "message": "Payment API started successfully",
+    "trace_id": "trace-1001"
+  },
+  {
+    "timestamp": "2026-09-18T14:13:21Z",
+    "level": "WARNING",
+    "service_name": "payment-api",
+    "message": "Database connection pool utilization reached 90 percent",
+    "trace_id": "trace-1002"
+  },
+  {
+    "timestamp": "2026-09-18T14:14:08Z",
+    "level": "ERROR",
+    "service_name": "payment-api",
+    "message": "Database connection pool exhausted",
+    "trace_id": "trace-1003"
+  },
+  {
+    "timestamp": "2026-09-18T14:14:09Z",
+    "level": "ERROR",
+    "service_name": "payment-api",
+    "message": "Timeout waiting for an available database connection",
+    "trace_id": "trace-1004"
+  },
+  {
+    "timestamp": "2026-09-18T14:14:10Z",
+    "level": "ERROR",
+    "service_name": "payment-api",
+    "message": "Payment request failed with HTTP status 500",
+    "trace_id": "trace-1005"
+  },
+  {
+    "timestamp": "2026-09-18T14:15:41Z",
+    "level": "ERROR",
+    "service_name": "payment-api",
+    "message": "Database connection acquisition exceeded 3000 milliseconds",
+    "trace_id": "trace-1006"
+  },
+  {
+    "timestamp": "2026-09-18T14:16:02Z",
+    "level": "INFO",
+    "service_name": "payment-api",
+    "message": "Health-check request completed",
+    "trace_id": "trace-1007"
+  }
+]
