@@ -1,0 +1,62 @@
+[
+  {
+    "id": "database-pool-symptoms",
+    "query": "The service has high latency, HTTP 500 errors, and database connection timeouts.",
+    "expected_file_name": "database_connection_pool.md",
+    "expected_heading": "Symptoms"
+  },
+  {
+    "id": "database-pool-investigation",
+    "query": "How should I investigate database connection acquisition timeouts after a deployment?",
+    "expected_file_name": "database_connection_pool.md",
+    "expected_heading": "Investigation"
+  },
+  {
+    "id": "database-pool-remediation",
+    "query": "What should I do when a deployment reduces the database pool size and causes failures?",
+    "expected_file_name": "database_connection_pool.md",
+    "expected_heading": "Remediation"
+  },
+  {
+    "id": "external-api-symptoms",
+    "query": "The upstream provider is timing out and failed requests are increasing.",
+    "expected_file_name": "external_api_timeout.md",
+    "expected_heading": "Symptoms"
+  },
+  {
+    "id": "external-api-investigation",
+    "query": "How do I determine whether timeout failures are caused by an external provider?",
+    "expected_file_name": "external_api_timeout.md",
+    "expected_heading": "Investigation"
+  },
+  {
+    "id": "ambiguous-database-timeout",
+    "query": "Requests became slow after a configuration deployment and are waiting several seconds for an available connection.",
+    "expected_file_name": "database_connection_pool.md",
+    "expected_heading": "Investigation"
+  },
+  {
+    "id": "ambiguous-external-timeout",
+    "query": "Payment requests are slow because the upstream fraud provider is unavailable and retry volume is increasing.",
+    "expected_file_name": "external_api_timeout.md",
+    "expected_heading": "Symptoms"
+  },
+  {
+    "id": "external-api-remediation",
+    "query": "Should we reduce retries, enable a fallback, or open the circuit breaker while a provider is unavailable?",
+    "expected_file_name": "external_api_timeout.md",
+    "expected_heading": "Remediation"
+  },
+  {
+    "id": "high-cpu-investigation",
+    "query": "CPU increased after a deployment. How can I investigate repeated processing, expensive queries, or an infinite loop?",
+    "expected_file_name": "high_cpu_usage.md",
+    "expected_heading": "Investigation"
+  },
+  {
+    "id": "high-cpu-remediation",
+    "query": "Should I scale the service, stop a background job, optimize the operation, or roll back the deployment because of high CPU?",
+    "expected_file_name": "high_cpu_usage.md",
+    "expected_heading": "Remediation"
+  }
+]

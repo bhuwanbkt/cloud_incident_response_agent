@@ -1,0 +1,62 @@
+[
+  {
+    "id": "supported-database-timeout",
+    "query": "The service has database connection pool timeouts and HTTP 500 errors.",
+    "expected_relevant": true,
+    "expected_file_name": "database_connection_pool.md",
+    "expected_heading": "Symptoms"
+  },
+  {
+    "id": "supported-database-remediation",
+    "query": "A deployment reduced the database pool size. What action should we take?",
+    "expected_relevant": true,
+    "expected_file_name": "database_connection_pool.md",
+    "expected_heading": "Remediation"
+  },
+  {
+    "id": "supported-external-provider",
+    "query": "The upstream provider is timing out and retry volume is increasing.",
+    "expected_relevant": true,
+    "expected_file_name": "external_api_timeout.md",
+    "expected_heading": "Symptoms"
+  },
+  {
+    "id": "supported-high-cpu",
+    "query": "How should I investigate high CPU after a deployment?",
+    "expected_relevant": true,
+    "expected_file_name": "high_cpu_usage.md",
+    "expected_heading": "Investigation"
+  },
+  {
+    "id": "supported-memory-leak",
+    "query": "Memory usage keeps growing and does not return to normal after requests finish.",
+    "expected_relevant": true,
+    "expected_file_name": "memory_leak.md",
+    "expected_heading": "Symptoms"
+  },
+  {
+    "id": "unsupported-helicopter",
+    "query": "How do I repair a helicopter engine?",
+    "expected_relevant": false
+  },
+  {
+    "id": "unsupported-vacation",
+    "query": "What is the company vacation policy?",
+    "expected_relevant": false
+  },
+  {
+    "id": "unsupported-password",
+    "query": "How do I reset a customer's password?",
+    "expected_relevant": false
+  },
+  {
+    "id": "unsupported-weather",
+    "query": "What will the weather be tomorrow?",
+    "expected_relevant": false
+  },
+  {
+    "id": "unsupported-printer",
+    "query": "How do I install a printer driver?",
+    "expected_relevant": false
+  }
+]

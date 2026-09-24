@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from collections.abc import (
     AsyncGenerator,
@@ -5,10 +6,16 @@ from collections.abc import (
     Callable,
 )
 from contextlib import asynccontextmanager
+from dataclasses import asdict
 from pathlib import Path
 from time import perf_counter
+from typing import Any
 
-from fastapi import FastAPI, Request, Response
+from fastapi import (
+    FastAPI,
+    Request,
+    Response,
+)
 from langgraph.checkpoint.sqlite.aio import (
     AsyncSqliteSaver,
 )
@@ -22,11 +29,18 @@ from cloud_incident_response_agent.api.incidents import (
 from cloud_incident_response_agent.config import (
     get_settings,
 )
+from cloud_incident_response_agent.database import (
+    SessionLocal,
+    initialize_database,
+)
 from cloud_incident_response_agent.observability import (
     configure_logging,
     create_request_id,
     reset_request_id,
     set_request_id,
+)
+from cloud_incident_response_agent.services.runbook_sync import (
+    sync_runbooks,
 )
 
 
@@ -45,6 +59,30 @@ CHECKPOINT_DATABASE = (
 )
 
 
+def initialize_runbook_storage() -> dict[
+    str,
+    Any,
+]:
+    """
+    Initialize PostgreSQL and synchronize runbooks.
+
+    This function is synchronous because SQLAlchemy and
+    the embedding model currently use synchronous APIs.
+    FastAPI runs it in a worker thread during startup.
+    """
+    initialize_database()
+
+    with SessionLocal() as database:
+        result = sync_runbooks(
+            database=database,
+            runbook_directory=(
+                settings.runbook_directory
+            ),
+        )
+
+    return asdict(result)
+
+
 @asynccontextmanager
 async def lifespan(
     app: FastAPI,
@@ -56,6 +94,19 @@ async def lifespan(
 
     logger.info(
         "Starting incident response API"
+    )
+
+    runbook_sync_result = await asyncio.to_thread(
+        initialize_runbook_storage
+    )
+
+    logger.info(
+        "PostgreSQL runbook storage ready",
+        extra={
+            "runbook_sync": (
+                runbook_sync_result
+            ),
+        },
     )
 
     async with (
@@ -104,6 +155,7 @@ async def log_http_request(
     ],
 ) -> Response:
     request_id = create_request_id()
+
     request_id_token = set_request_id(
         request_id
     )

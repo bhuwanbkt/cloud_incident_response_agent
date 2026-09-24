@@ -1,79 +1,41 @@
 from functools import lru_cache
 
-import numpy as np
-from sentence_transformers import SentenceTransformer
 from sentence_transformers.cross_encoder import (
     CrossEncoder,
 )
+from sqlalchemy import select
 
 from cloud_incident_response_agent.config import (
     get_settings,
 )
-from cloud_incident_response_agent.retrieval.runbook_loader import (
-    load_runbooks,
+from cloud_incident_response_agent.database import (
+    SessionLocal,
+)
+from cloud_incident_response_agent.models.runbook import (
+    RunbookChunk as DatabaseRunbookChunk,
+)
+from cloud_incident_response_agent.models.runbook import (
+    RunbookDocument,
 )
 from cloud_incident_response_agent.retrieval.schemas import (
     RunbookChunk,
     RunbookSearchResult,
+)
+from cloud_incident_response_agent.services.embeddings import (
+    get_embedding_service,
 )
 
 
 settings = get_settings()
 
 
-@lru_cache
-def get_embedding_model() -> SentenceTransformer:
-    return SentenceTransformer(
-        settings.embedding_model
-    )
-
-
-@lru_cache
+@lru_cache(maxsize=1)
 def get_reranker_model() -> CrossEncoder:
+    """
+    Load the cross-encoder once and reuse it.
+    """
     return CrossEncoder(
         settings.reranker_model
-    )
-
-
-@lru_cache
-def get_runbook_chunks() -> tuple[RunbookChunk, ...]:
-    chunks = load_runbooks(
-        settings.runbook_directory
-    )
-
-    return tuple(chunks)
-
-
-@lru_cache
-def get_runbook_embeddings() -> np.ndarray:
-    chunks = get_runbook_chunks()
-
-    if not chunks:
-        return np.empty(
-            shape=(0, 0),
-            dtype=np.float32,
-        )
-
-    embedding_texts = [
-        (
-            f"Runbook: {chunk.runbook_name}\n"
-            f"Section: {chunk.heading}\n"
-            f"{chunk.content}"
-        )
-        for chunk in chunks
-    ]
-
-    model = get_embedding_model()
-
-    embeddings = model.encode(
-        embedding_texts,
-        normalize_embeddings=True,
-        convert_to_numpy=True,
-    )
-
-    return np.asarray(
-        embeddings,
-        dtype=np.float32,
     )
 
 
@@ -81,17 +43,16 @@ def retrieve_candidates(
     query: str,
     candidate_count: int | None = None,
 ) -> list[tuple[RunbookChunk, float]]:
+    """
+    Retrieve candidate chunks from PostgreSQL using
+    pgvector cosine distance.
+    """
     normalized_query = query.strip()
 
     if not normalized_query:
         raise ValueError(
             "Search query cannot be empty."
         )
-
-    chunks = get_runbook_chunks()
-
-    if not chunks:
-        return []
 
     requested_count = (
         candidate_count
@@ -103,35 +64,76 @@ def retrieve_candidates(
             "Candidate count must be positive."
         )
 
-    model = get_embedding_model()
-
-    query_embedding = model.encode(
-        normalized_query,
-        normalize_embeddings=True,
-        convert_to_numpy=True,
+    embedding_service = (
+        get_embedding_service()
     )
 
-    chunk_embeddings = get_runbook_embeddings()
-
-    similarity_scores = (
-        chunk_embeddings
-        @ np.asarray(
-            query_embedding,
-            dtype=np.float32,
+    query_embedding = (
+        embedding_service.embed_text(
+            normalized_query
         )
     )
 
-    candidate_indexes = np.argsort(
-        similarity_scores
-    )[::-1][:requested_count]
+    cosine_distance = (
+        DatabaseRunbookChunk.embedding
+        .cosine_distance(query_embedding)
+    )
 
-    return [
-        (
-            chunks[int(index)],
-            float(similarity_scores[index]),
+    statement = (
+        select(
+            DatabaseRunbookChunk,
+            RunbookDocument,
+            cosine_distance.label(
+                "cosine_distance"
+            ),
         )
-        for index in candidate_indexes
-    ]
+        .join(
+            RunbookDocument,
+            DatabaseRunbookChunk.document_id
+            == RunbookDocument.id,
+        )
+        .order_by(cosine_distance)
+        .limit(requested_count)
+    )
+
+    with SessionLocal() as database:
+        rows = database.execute(
+            statement
+        ).all()
+
+    candidates: list[
+        tuple[RunbookChunk, float]
+    ] = []
+
+    for (
+        database_chunk,
+        document,
+        distance,
+    ) in rows:
+        semantic_score = (
+            1.0 - float(distance)
+        )
+
+        chunk = RunbookChunk(
+            runbook_name=(
+                document.runbook_name
+            ),
+            file_name=document.file_name,
+            heading=(
+                database_chunk.heading
+                or "Overview"
+            ),
+            content=database_chunk.content,
+        )
+
+        candidates.append(
+            (
+                chunk,
+                semantic_score,
+            )
+        )
+
+    return candidates
 
 
 def rerank_candidates(
@@ -141,6 +143,16 @@ def rerank_candidates(
     ],
     top_k: int,
 ) -> list[RunbookSearchResult]:
+    """
+    Rerank pgvector candidates with a cross-encoder.
+    """
+    normalized_query = query.strip()
+
+    if not normalized_query:
+        raise ValueError(
+            "Search query cannot be empty."
+        )
+
     if top_k < 1:
         raise ValueError(
             "Top K must be positive."
@@ -151,10 +163,12 @@ def rerank_candidates(
 
     pairs = [
         [
-            query,
+            normalized_query,
             (
-                f"Runbook: {chunk.runbook_name}\n"
-                f"Section: {chunk.heading}\n"
+                f"Runbook: "
+                f"{chunk.runbook_name}\n"
+                f"Section: "
+                f"{chunk.heading}\n"
                 f"{chunk.content}"
             ),
         ]
@@ -190,7 +204,9 @@ def rerank_candidates(
 
     return sorted(
         scored_results,
-        key=lambda result: result.reranker_score,
+        key=lambda result: (
+            result.reranker_score
+        ),
         reverse=True,
     )[:top_k]
 
@@ -199,6 +215,14 @@ def search_runbooks(
     query: str,
     top_k: int | None = None,
 ) -> list[RunbookSearchResult]:
+    """
+    Perform the complete retrieval process:
+
+    1. Generate the query embedding.
+    2. Retrieve candidates from pgvector.
+    3. Rerank candidates with the cross-encoder.
+    4. Remove irrelevant results.
+    """
     final_top_k = (
         top_k
         or settings.retrieval_top_k
@@ -219,8 +243,17 @@ def search_runbooks(
         candidate_count=candidate_count,
     )
 
-    return rerank_candidates(
+    reranked_results = rerank_candidates(
         query=query,
         candidates=candidates,
         top_k=final_top_k,
     )
+
+    return [
+        result
+        for result in reranked_results
+        if (
+            result.reranker_score
+            >= settings.minimum_reranker_score
+        )
+    ]

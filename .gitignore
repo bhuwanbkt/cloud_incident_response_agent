@@ -1,46 +1,50 @@
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
-
-# Virtual environment
-.venv/
-
-# Environment variables
+# Environment variables and secrets
 .env
 .env.*
 !.env.example
 
-# Test and tool caches
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .coverage
 htmlcov/
 
-# Generated incident data
-data/incidents/*
-!data/incidents/.gitkeep
+# Virtual environments
+.venv/
+venv/
+env/
 
-# Generated evaluation reports
-evals/reports/
-evals/latest_report.json
-
-# Logs
-*.log
-
-# Model cache
-.cache/
-model_cache/
-
-# macOS
+# IDE and operating system
+.vscode/
+.idea/
 .DS_Store
 
-# Editors
-.vscode/
+# Build outputs
+build/
+dist/
+*.egg-info/
 
-# LangGraph checkpoints
-data/checkpoints/
+# Local databases and model files
+*.db
 *.sqlite
 *.sqlite3
-*.db
+*.gguf
+*.bin
+models/
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
+
+# Evaluation output
+evaluation_results/
+results.json
+
+# LangGraph local state
+.langgraph_api/
