@@ -38,7 +38,7 @@ def get_database() -> Generator[
     None,
 ]:
     """
-    Create a database session and always close it.
+    Provide a database session and always close it.
     """
     database = SessionLocal()
 
@@ -50,21 +50,59 @@ def get_database() -> Generator[
 
 def initialize_database() -> None:
     """
-    Enable pgvector and create application tables.
+    Verify that PostgreSQL, pgvector, and the required
+    Alembic-managed tables are available.
 
-    Alembic migrations will replace create_all later.
+    This function does not create or modify tables.
     """
-    from cloud_incident_response_agent import models
-
-    # This import registers the model classes with
-    # SQLAlchemy's Base metadata.
-    _ = models
-
-    with engine.begin() as connection:
-        connection.execute(
-            text(
-                "CREATE EXTENSION IF NOT EXISTS vector"
+    with engine.connect() as connection:
+        database_status = (
+            connection.execute(
+                text(
+                    """
+                    SELECT
+                        EXISTS (
+                            SELECT 1
+                            FROM pg_extension
+                            WHERE extname = 'vector'
+                        ) AS vector_enabled,
+                        (
+                            to_regclass(
+                                'public.runbook_documents'
+                            ) IS NOT NULL
+                        ) AS documents_table_exists,
+                        (
+                            to_regclass(
+                                'public.runbook_chunks'
+                            ) IS NOT NULL
+                        ) AS chunks_table_exists
+                    """
+                )
             )
+            .mappings()
+            .one()
         )
 
-    Base.metadata.create_all(bind=engine)
+    if not database_status[
+        "vector_enabled"
+    ]:
+        raise RuntimeError(
+            "The pgvector extension is not enabled. "
+            "Run: uv run alembic upgrade head"
+        )
+
+    if not database_status[
+        "documents_table_exists"
+    ]:
+        raise RuntimeError(
+            "The runbook_documents table is missing. "
+            "Run: uv run alembic upgrade head"
+        )
+
+    if not database_status[
+        "chunks_table_exists"
+    ]:
+        raise RuntimeError(
+            "The runbook_chunks table is missing. "
+            "Run: uv run alembic upgrade head"
+        )
