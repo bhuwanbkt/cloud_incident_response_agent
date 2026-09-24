@@ -31,6 +31,9 @@ settings = get_settings()
 
 @lru_cache(maxsize=1)
 def get_reranker_model() -> CrossEncoder:
+    """
+    Load the cross-encoder once and reuse it.
+    """
     return CrossEncoder(
         settings.reranker_model
     )
@@ -41,8 +44,8 @@ def retrieve_candidates(
     candidate_count: int | None = None,
 ) -> list[tuple[RunbookChunk, float]]:
     """
-    Retrieve candidate chunks from PostgreSQL
-    using pgvector cosine distance.
+    Retrieve candidate chunks from PostgreSQL using
+    pgvector cosine distance.
     """
     normalized_query = query.strip()
 
@@ -111,23 +114,21 @@ def retrieve_candidates(
             1.0 - float(distance)
         )
 
+        chunk = RunbookChunk(
+            runbook_name=(
+                document.runbook_name
+            ),
+            file_name=document.file_name,
+            heading=(
+                database_chunk.heading
+                or "Overview"
+            ),
+            content=database_chunk.content,
+        )
+
         candidates.append(
             (
-                RunbookChunk(
-                    runbook_name=(
-                        document.runbook_name
-                    ),
-                    file_name=(
-                        document.file_name
-                    ),
-                    heading=(
-                        database_chunk.heading
-                        or "Overview"
-                    ),
-                    content=(
-                        database_chunk.content
-                    ),
-                ),
+                chunk,
                 semantic_score,
             )
         )
@@ -143,9 +144,15 @@ def rerank_candidates(
     top_k: int,
 ) -> list[RunbookSearchResult]:
     """
-    Rerank pgvector candidates with a
-    cross-encoder model.
+    Rerank pgvector candidates with a cross-encoder.
     """
+    normalized_query = query.strip()
+
+    if not normalized_query:
+        raise ValueError(
+            "Search query cannot be empty."
+        )
+
     if top_k < 1:
         raise ValueError(
             "Top K must be positive."
@@ -156,7 +163,7 @@ def rerank_candidates(
 
     pairs = [
         [
-            query,
+            normalized_query,
             (
                 f"Runbook: "
                 f"{chunk.runbook_name}\n"
@@ -209,10 +216,12 @@ def search_runbooks(
     top_k: int | None = None,
 ) -> list[RunbookSearchResult]:
     """
-    Perform two-stage runbook retrieval:
+    Perform the complete retrieval process:
 
-    1. pgvector semantic candidate retrieval
-    2. Cross-encoder reranking
+    1. Generate the query embedding.
+    2. Retrieve candidates from pgvector.
+    3. Rerank candidates with the cross-encoder.
+    4. Remove irrelevant results.
     """
     final_top_k = (
         top_k
@@ -234,8 +243,17 @@ def search_runbooks(
         candidate_count=candidate_count,
     )
 
-    return rerank_candidates(
+    reranked_results = rerank_candidates(
         query=query,
         candidates=candidates,
         top_k=final_top_k,
     )
+
+    return [
+        result
+        for result in reranked_results
+        if (
+            result.reranker_score
+            >= settings.minimum_reranker_score
+        )
+    ]

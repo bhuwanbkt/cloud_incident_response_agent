@@ -267,7 +267,7 @@ Operational evidence:
             except (TypeError, ValueError):
                 continue
 
-            if reranker_score >= 0:
+            if (reranker_score>= settings.minimum_reranker_score):
                 relevant_runbooks.append(
                     (
                         reranker_score,
@@ -439,7 +439,7 @@ def validate_diagnosis(
         except (TypeError, ValueError):
             continue
 
-        if reranker_score >= 0:
+        if (reranker_score>= settings.minimum_reranker_score):
             relevant_runbook_available = True
             break
 

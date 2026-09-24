@@ -13,20 +13,24 @@ settings = get_settings()
 
 
 class EmbeddingService:
+    """
+    Generate normalized embeddings for runbook
+    ingestion and pgvector retrieval.
+    """
+
     def __init__(self) -> None:
         self.model = SentenceTransformer(
             settings.embedding_model
         )
 
         actual_dimension = (
-            self.model
-            .get_sentence_embedding_dimension()
+            self.model.get_embedding_dimension()
         )
 
         if actual_dimension is None:
             raise ValueError(
-                "The model did not report its "
-                "embedding dimension."
+                "The embedding model did not report "
+                "its embedding dimension."
             )
 
         if (
@@ -35,17 +39,28 @@ class EmbeddingService:
         ):
             raise ValueError(
                 "Embedding dimension mismatch. "
-                f"Configured: "
-                f"{settings.embedding_dimension}, "
-                f"model: {actual_dimension}."
+                f"Configured dimension: "
+                f"{settings.embedding_dimension}. "
+                f"Model dimension: "
+                f"{actual_dimension}."
             )
 
     def embed_text(
         self,
         text: str,
     ) -> list[float]:
+        """
+        Generate one normalized embedding.
+        """
+        normalized_text = text.strip()
+
+        if not normalized_text:
+            raise ValueError(
+                "Text cannot be empty."
+            )
+
         embedding = self.model.encode(
-            text,
+            normalized_text,
             normalize_embeddings=True,
         )
 
@@ -55,11 +70,28 @@ class EmbeddingService:
         self,
         texts: list[str],
     ) -> list[list[float]]:
+        """
+        Generate normalized embeddings in batches.
+        """
         if not texts:
             return []
 
+        normalized_texts = [
+            text.strip()
+            for text in texts
+        ]
+
+        if any(
+            not text
+            for text in normalized_texts
+        ):
+            raise ValueError(
+                "Embedding input cannot contain "
+                "empty text."
+            )
+
         embeddings = self.model.encode(
-            texts,
+            normalized_texts,
             normalize_embeddings=True,
             batch_size=32,
             show_progress_bar=False,
